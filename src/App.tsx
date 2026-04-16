@@ -131,21 +131,58 @@ function App() {
     return modes[code] || `代码: ${code}`;
   };
 
-  const parseExposureTime = (value: number | string | undefined): string => {
-    if (value === undefined || value === null) return '';
-    const num = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(num)) return '';
+  const parseRationalNumber = (value: any): number | undefined => {
+    if (value === undefined || value === null) return undefined;
+    if (typeof value === 'number') return Number.isFinite(value) ? value : undefined;
+    if (typeof value === 'string') {
+      const fractionMatch = value.trim().match(/^(-?\d+(?:\.\d+)?)\s*\/\s*(-?\d+(?:\.\d+)?)/);
+      if (fractionMatch) {
+        const numerator = Number(fractionMatch[1]);
+        const denominator = Number(fractionMatch[2]);
+        return denominator !== 0 ? numerator / denominator : undefined;
+      }
+
+      const num = Number.parseFloat(value);
+      return Number.isFinite(num) ? num : undefined;
+    }
+    if (Array.isArray(value)) {
+      if (value.length >= 2 && typeof value[0] === 'number' && typeof value[1] === 'number') {
+        return value[1] !== 0 ? value[0] / value[1] : undefined;
+      }
+
+      for (const item of value) {
+        const num = parseRationalNumber(item);
+        if (num !== undefined) return num;
+      }
+      return undefined;
+    }
+    if (typeof value === 'object') {
+      if (typeof value.numerator === 'number' && typeof value.denominator === 'number') {
+        return value.denominator !== 0 ? value.numerator / value.denominator : undefined;
+      }
+      if (value.value !== undefined) {
+        return parseRationalNumber(value.value);
+      }
+      if (value.description !== undefined) {
+        return parseRationalNumber(value.description);
+      }
+    }
+    return undefined;
+  };
+
+  const parseExposureTime = (value: any): string => {
+    const num = parseRationalNumber(value);
+    if (num === undefined) return '';
     if (num < 1) {
       return `1/${Math.round(1 / num)}s`;
     }
     return `${num}s`;
   };
 
-  const parseFNumber = (value: number | string | undefined): string => {
-    if (value === undefined || value === null) return '';
-    const num = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(num)) return '';
-    return `f/${num}`;
+  const parseFNumber = (value: any): string => {
+    const num = parseRationalNumber(value);
+    if (num === undefined) return '';
+    return `f/${Number.isInteger(num) ? num : Number(num.toFixed(1))}`;
   };
 
   const parseFocalLength = (value: number | string | undefined): string => {
@@ -325,7 +362,11 @@ function App() {
         || getTagValue(xmpTags.LensSerialNumber);
 
       // Shooting Parameters
-      const fNumber = getTagValue(exifTags.FNumber) || getTagValue(exifTags.ApertureValue);
+      const fNumber = getTagValue(exifTags.FNumber)
+        || getTagValue(exifTags['F Number'])
+        || getTagValue(exifTags.ApertureValue)
+        || getTagValue(exifTags.Aperture)
+        || findTagValueDeep(tags, ['FNumber', 'F Number', 'ApertureValue', 'Aperture']);
       exif.aperture = parseFNumber(fNumber);
 
       const exposureTime = getTagValue(exifTags.ExposureTime) || getTagValue(exifTags.ShutterSpeedValue);
