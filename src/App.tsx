@@ -458,27 +458,27 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
       <header className="border-b border-white/10 bg-black/20 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
-              <Camera className="w-6 h-6 text-white" />
+            <div className="shrink-0 p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+              <Camera className="w-5 h-5 text-white sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">EXIF 信息读取</h1>
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold text-white sm:text-xl">EXIF 信息读取</h1>
               <p className="text-sm text-white/60">图片元数据分析工具</p>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
         {/* Upload Area */}
         {!imagePreview && !exifData && (
           <div
-            className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${
+            className={`relative border-2 border-dashed rounded-lg px-4 py-8 text-center transition-all duration-300 sm:p-12 ${
               isDragging
                 ? 'border-purple-500 bg-purple-500/10'
                 : 'border-white/20 hover:border-purple-500/50 hover:bg-white/5'
@@ -495,11 +495,11 @@ function App() {
             />
 
             <div className="flex flex-col items-center gap-4">
-              <div className={`p-6 rounded-full bg-white/5 transition-transform duration-300 ${isDragging ? 'scale-110' : ''}`}>
-                <Upload className={`w-12 h-12 text-purple-400 ${isDragging ? 'animate-bounce' : ''}`} />
+              <div className={`p-5 rounded-full bg-white/5 transition-transform duration-300 sm:p-6 ${isDragging ? 'scale-110' : ''}`}>
+                <Upload className={`w-10 h-10 text-purple-400 sm:w-12 sm:h-12 ${isDragging ? 'animate-bounce' : ''}`} />
               </div>
               <div>
-                <p className="text-lg font-medium text-white">
+                <p className="text-base font-medium text-white sm:text-lg">
                   点击选择图片或拖动文件到这里
                 </p>
                 <p className="text-sm text-white/50 mt-1">
@@ -520,12 +520,12 @@ function App() {
 
         {/* Error State */}
         {error && (
-          <div className="mt-8 p-6 bg-red-500/10 border border-red-500/30 rounded-2xl">
-            <div className="flex items-start gap-4">
+          <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg sm:mt-8 sm:p-6">
+            <div className="flex items-start gap-3 sm:gap-4">
               <AlertCircle className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" />
-              <div>
+              <div className="min-w-0">
                 <h3 className="font-medium text-red-400">解析失败</h3>
-                <p className="text-red-300/80 mt-1">{error}</p>
+                <p className="text-red-300/80 mt-1 break-words">{error}</p>
                 <button
                   onClick={resetAnalysis}
                   className="mt-4 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-colors"
@@ -551,25 +551,25 @@ function App() {
 
         {/* Features Section */}
         {!imagePreview && !exifData && (
-          <div className="mt-12 grid md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
-              <div className="p-3 bg-blue-500/20 rounded-xl w-fit mb-4">
+          <div className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 md:grid-cols-3 sm:gap-6">
+            <div className="p-4 bg-white/5 rounded-lg border border-white/10 sm:p-6">
+              <div className="p-3 bg-blue-500/20 rounded-lg w-fit mb-4">
                 <Smartphone className="w-6 h-6 text-blue-400" />
               </div>
               <h3 className="font-semibold text-white mb-2">相机信息</h3>
               <p className="text-sm text-white/60">自动识别相机品牌、型号和镜头信息</p>
             </div>
 
-            <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
-              <div className="p-3 bg-green-500/20 rounded-xl w-fit mb-4">
+            <div className="p-4 bg-white/5 rounded-lg border border-white/10 sm:p-6">
+              <div className="p-3 bg-green-500/20 rounded-lg w-fit mb-4">
                 <Aperture className="w-6 h-6 text-green-400" />
               </div>
               <h3 className="font-semibold text-white mb-2">拍摄参数</h3>
               <p className="text-sm text-white/60">显示光圈、快门速度、ISO等详细参数</p>
             </div>
 
-            <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
-              <div className="p-3 bg-purple-500/20 rounded-xl w-fit mb-4">
+            <div className="p-4 bg-white/5 rounded-lg border border-white/10 sm:p-6">
+              <div className="p-3 bg-purple-500/20 rounded-lg w-fit mb-4">
                 <HardDrive className="w-6 h-6 text-purple-400" />
               </div>
               <h3 className="font-semibold text-white mb-2">RAW格式支持</h3>
@@ -580,8 +580,8 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 mt-12 py-6">
-        <div className="max-w-6xl mx-auto px-6 text-center text-sm text-white/40">
+      <footer className="border-t border-white/10 mt-8 py-5 sm:mt-12 sm:py-6">
+        <div className="max-w-6xl mx-auto px-4 text-center text-sm text-white/40 sm:px-6">
           EXIF 信息读取工具 · 纯前端处理，保护您的隐私
         </div>
       </footer>
